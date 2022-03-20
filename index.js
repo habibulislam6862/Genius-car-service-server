@@ -78,6 +78,9 @@ async function run() {
               }
         })
     } finally {
+        app.get('/', (req, res) => {
+            res.send("Hey, Server is working")
+        })
         // await client.close();
     }
 }
