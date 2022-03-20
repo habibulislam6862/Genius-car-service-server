@@ -31,10 +31,20 @@ async function run() {
 
         // get all services
         app.get('/services', async (req, res) => {
+            const limit = parseInt(req.query.limit);
+            const page = parseInt(req.query.page);
             const query = {};
-            const cursor = geniusCar.find(query);
+            const count = await geniusCar.find(query).count();
+
+
+            const options = {
+                limit,
+                skip: page*limit
+            };
+           
+            const cursor = geniusCar.find(query, options);
             const result  = await cursor.toArray();
-            res.json(result);
+            res.json({count, services: result});
         })
 
         // get single service
@@ -72,7 +82,7 @@ async function run() {
     }
 }
 
-run()
+run().catch(() => console.dir())
 
 
 app.listen(port, () => {
