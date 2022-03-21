@@ -42,7 +42,8 @@ async function run() {
 
             const options = {
                 limit,
-                skip: page*limit
+                skip: page*limit,
+                sort: {date: 1}
             };
            
             const cursor = geniusCar.find(query, options);
