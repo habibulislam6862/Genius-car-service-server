@@ -21,6 +21,7 @@ async function run() {
         await client.connect();
         const database = client.db("geniusCar");
         const geniusCar = database.collection("service");
+        const geniusOrder = database.collection('orders');
         
         // post service
         app.post('/service/post', async (req, res) => {
@@ -76,6 +77,39 @@ async function run() {
               } else {
                 res.json({deletedCount: 0})
               }
+        });
+
+        // submit order
+        app.post('/place-order', async (req, res) => {
+           const data = req.body;
+           const doc = {
+               userData: {
+                   name: data.name,
+                   email: data.email
+               },
+               orderId: data.service
+           }
+           const result = await geniusOrder.insertOne(doc);
+           res.json(result);
+        })
+
+        // get order list
+        app.get('/user-orders', async (req, res) => {
+            const userMail = req.query.email;
+            const userQuery = {
+                'userData.email': {
+                    $in: [userMail]
+                }
+            }
+            const result = await geniusOrder.find(userQuery).toArray();
+            const ordersIds = result.map(order => ObjectId(order.orderId));
+            const serviceQuery = {
+                _id: {
+                    $in: ordersIds
+                }
+            }
+            const services = await geniusCar.find(serviceQuery).toArray();
+            res.json(services)
         })
     } finally {
         app.get('/', (req, res) => {
