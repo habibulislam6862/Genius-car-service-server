@@ -44,7 +44,8 @@ async function run() {
             };
            
             const cursor = geniusCar.find(query, options);
-            const result  = await cursor.toArray();
+            let result  = await cursor.toArray();
+            result = result.reverse();
             res.json({count, services: result});
         })
 
