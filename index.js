@@ -25,7 +25,9 @@ async function run() {
         
         // post service
         app.post('/service/post', async (req, res) => {
-            const service = req.body;
+            let service = req.body;
+            const date = new Date();
+            service.date = date;
             const result = await geniusCar.insertOne(service);
             res.json(result);
         })
