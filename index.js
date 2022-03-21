@@ -43,12 +43,11 @@ async function run() {
             const options = {
                 limit,
                 skip: page*limit,
-                sort: {date: 1}
+                sort: {date: -1}
             };
            
             const cursor = geniusCar.find(query, options);
-            let result  = await cursor.toArray();
-            result = result.reverse();
+            const result  = await cursor.toArray();
             res.json({count, services: result});
         })
 
